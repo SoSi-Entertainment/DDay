@@ -1,0 +1,6 @@
+---,Start Checkpoint,Money on checkpoints,Units
+Study_Level,"0","","(Trooper)"
+Level_1,"0","","(Trooper,RifleMan)"
+Level_2,"0","","(Trooper,RifleMan,Tank)"
+Level_3,"0","","(Trooper,RifleMan,Tank,Shotguner)"
+MAIN_LEVEL,"0","(100,200,300)","(Trooper,RifleMan,Tank,Shotguner)"
