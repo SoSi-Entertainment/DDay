@@ -1,7 +1,7 @@
 ---,Start Checkpoint,Money on checkpoints,Units
-Study_Level,"3","(69)","(RifleMan)"
+Study_Level,"3","(69,100,300)","(RifleMan,Tank)"
 Level_1,"0","","(Trooper,RifleMan)"
 Level_2,"0","","(Trooper,RifleMan,Tank)"
 Level_3,"0","","(Trooper,RifleMan,Tank,Shotguner)"
-MAIN_LEVEL,"0","(100,200,300)","(Trooper,RifleMan,Tank,Shotguner)"
-Small_Test_Map,"2","","(Trooper,RifleMan,Tank,Shotguner)"
+MAIN_LEVEL,"0","(5,200,300)","(Trooper,RifleMan,Tank,Shotguner)"
+Small_Test_Map,"1","(5,200,300)","(Trooper,RifleMan,Tank,Shotguner)"
