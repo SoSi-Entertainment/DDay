@@ -1,0 +1,62 @@
+[
+	{
+		"Name": "Study_Level",
+		"Start Checkpoint": 3,
+		"Money on checkpoints": [ 69 ],
+		"Units": [
+			"RifleMan"
+		]
+	},
+	{
+		"Name": "Level_1",
+		"Start Checkpoint": 2,
+		"Money on checkpoints": [ 96, 63 ],
+		"Units": [
+			"Trooper",
+			"RifleMan"
+		]
+	},
+	{
+		"Name": "Level_2",
+		"Start Checkpoint": 1,
+		"Money on checkpoints": [],
+		"Units": [
+			"Trooper",
+			"RifleMan",
+			"Tank"
+		]
+	},
+	{
+		"Name": "Level_3",
+		"Start Checkpoint": 5,
+		"Money on checkpoints": [],
+		"Units": [
+			"Trooper",
+			"RifleMan",
+			"Tank",
+			"Shotguner"
+		]
+	},
+	{
+		"Name": "MAIN_LEVEL",
+		"Start Checkpoint": 6,
+		"Money on checkpoints": [ 100, 200, 300 ],
+		"Units": [
+			"Trooper",
+			"RifleMan",
+			"Tank",
+			"Shotguner"
+		]
+	},
+	{
+		"Name": "Small_Test_Map",
+		"Start Checkpoint": 0,
+		"Money on checkpoints": [],
+		"Units": [
+			"Trooper",
+			"RifleMan",
+			"Tank",
+			"Shotguner"
+		]
+	}
+]
