@@ -1,4 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 .mp4 filter=lfs diff=lfs merge=lfs -text
-\Contetnt\Maps\MAIN_LEVEL_BuiltData.uasset filter=lfs diff=lfs merge=lfs -text
+Content/Maps/MAIN_LEVEL_BuiltData.uasset filter=lfs diff=lfs merge=lfs -text
