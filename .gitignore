@@ -13,5 +13,4 @@ Saved
 *.xcodeproj
 *.xcworkspace
 Content/Maps/MAIN_LEVEL_2_BuiltData.uasset
-Build/Windows/FileOpenOrder/CookerOpenOrder.log
-Build/Windows/FileOpenOrder/EditorOpenOrder.log
+Build/Windows/FileOpenOrder
