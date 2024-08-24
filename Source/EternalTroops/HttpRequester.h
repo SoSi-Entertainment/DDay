@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "Http.h"
 #include "HttpRequester.generated.h"
+
 
 /**
  * 
@@ -18,5 +20,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Http request")
 	static FString GetRequest(const FString& url, const FString& uaid, const FString& sign);
+
+	UFUNCTION(BlueprintCallable, Category = "Http request")
+	FString TestGet();
+
+	void OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully);
 };
 
