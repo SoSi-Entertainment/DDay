@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(Blueprintable)
+UCLASS(BlueprintType)
 class ETERNALTROOPS_API UWorldObject : public UObject
 {
 	GENERATED_BODY()
