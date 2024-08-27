@@ -1,0 +1,26 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "GameCenterPlugin",
+	"Description": "",
+	"Category": "VKPlay",
+	"CreatedBy": "VK LLC",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": false,
+	"Installed": true,
+	"Modules": [
+    {
+      "Name": "GameCenterPlugin",
+      "Type": "Runtime",
+      "LoadingPhase": "PostConfigInit",
+	  "WhitelistPlatforms": [
+				"Win64",
+				"Win32"
+			]
+    }
+	]
+}
