@@ -43,6 +43,10 @@
 		{
 			"Name": "GameCenterPlugin",
 			"Enabled": false
+		},
+		{
+			"Name": "GPULightmass",
+			"Enabled": true
 		}
 	]
 }
