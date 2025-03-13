@@ -15,15 +15,15 @@ UAsyncPathfinding* UAsyncPathfinding::FindPathAsync(UObject* WorldContextObject,
 
 void UAsyncPathfinding::Activate()
 {
-    if (!WorldContext) return;
 
     //UWorld* World = GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::LogAndReturnNull);
-    UWorld* World = GetWorld();
+    UWorld* World = GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::LogAndReturnNull);
     if (!World)
     {
         UE_LOG(LogTemp, Error, TEXT("World is null!"));
         return;
     }
+
 
     UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(World);
     if (!NavSys)
