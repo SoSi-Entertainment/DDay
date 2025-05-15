@@ -13,4 +13,7 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Hash")
 	static int32 HashFromString(const FString& Input);
+
+	UFUNCTION(BlueprintCallable, Category = "Spawning")
+	static void SpawnWeightedCount(const TArray<float>& Probabilities, int32 NumToSpawn, TArray<int32>& OutCounts);
 };
