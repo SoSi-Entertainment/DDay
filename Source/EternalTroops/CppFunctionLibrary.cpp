@@ -1,5 +1,6 @@
 #include "CppFunctionLibrary.h"
 #include "Math/UnrealMathUtility.h"
+#include "ComponentInstanceDataCache.h"
 
 int32 UCppFunctionLibrary::HashFromString(const FString& Input)
 {
@@ -69,4 +70,13 @@ void UCppFunctionLibrary::SpawnWeightedCount(const TArray<float>& Probabilities,
         Remainders[MaxIndex] = 0.0f;  // чтобы не выбирать этот индекс повторно
         Remaining--;
     }
+}
+
+
+UActorComponent* UCppFunctionLibrary::SetCreationMethod(UActorComponent* ActorComponent, EComponentCreationMethod method)
+{
+    if (ActorComponent != nullptr) {
+        ActorComponent->CreationMethod = method;
+    }
+    return ActorComponent;
 }

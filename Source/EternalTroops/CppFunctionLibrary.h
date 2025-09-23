@@ -16,4 +16,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Spawning")
 	static void SpawnWeightedCount(const TArray<float>& Probabilities, int32 NumToSpawn, TArray<int32>& OutCounts);
+
+	UFUNCTION(BlueprintCallable, Category = "My_Editor_Scripts")
+	static UActorComponent* SetCreationMethod(UActorComponent* ActorComponent, EComponentCreationMethod method);
 };
