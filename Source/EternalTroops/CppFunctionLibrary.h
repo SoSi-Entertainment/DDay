@@ -19,4 +19,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "My_Editor_Scripts")
 	static UActorComponent* SetCreationMethod(UActorComponent* ActorComponent, EComponentCreationMethod method);
+
+	UFUNCTION(BlueprintCallable, Category = "Camera")
+	static void SetCameraMovableWhenPaused(UObject* WorldContextObject, bool bMovable);
 };

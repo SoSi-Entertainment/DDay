@@ -80,3 +80,12 @@ UActorComponent* UCppFunctionLibrary::SetCreationMethod(UActorComponent* ActorCo
     }
     return ActorComponent;
 }
+
+
+void UCppFunctionLibrary::SetCameraMovableWhenPaused(UObject* WorldContextObject, bool bMovable)
+{
+    if (UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+    {
+        World->bIsCameraMoveableWhenPaused = bMovable;
+    }
+}
