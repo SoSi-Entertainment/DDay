@@ -17,10 +17,15 @@ public:
     UPROPERTY(BlueprintAssignable)
     FOnPathFound OnPathFound;
 
-    UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", WorldContext = "WorldContextObject"))
-    static UAsyncPathfinding* FindPathAsync(UObject* WorldContextObject, FVector Start, FVector End);
+    UPROPERTY()
+    AAIController* AIController;
 
-
+    UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"))
+    static UAsyncPathfinding* FindPathAsync(
+        AAIController* Controller,
+        FVector Start,
+        FVector End
+    );
 
     virtual void Activate() override;
 

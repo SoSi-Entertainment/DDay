@@ -3,11 +3,12 @@
 #include "NavigationSystem.h"
 #include "NavigationPath.h"
 #include "GameFramework/Actor.h"
+#include "AIController.h"
 
-UAsyncPathfinding* UAsyncPathfinding::FindPathAsync(UObject* WorldContextObject, FVector Start, FVector End)
+UAsyncPathfinding* UAsyncPathfinding::FindPathAsync(AAIController* Controller, FVector Start, FVector End)
 {
     UAsyncPathfinding* Node = NewObject<UAsyncPathfinding>();
-    Node->WorldContext = WorldContextObject;
+    Node->AIController = Controller;
     Node->StartLocation = Start;
     Node->EndLocation = End;
     return Node;
@@ -15,15 +16,25 @@ UAsyncPathfinding* UAsyncPathfinding::FindPathAsync(UObject* WorldContextObject,
 
 void UAsyncPathfinding::Activate()
 {
+    if (!AIController)
+    {
+        UE_LOG(LogTemp, Error, TEXT("AIController is null!"));
+        return;
+    }
 
-    //UWorld* World = GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::LogAndReturnNull);
-    UWorld* World = GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::LogAndReturnNull);
+    APawn* Pawn = AIController->GetPawn();
+    if (!Pawn)
+    {
+        UE_LOG(LogTemp, Error, TEXT("Pawn is null!"));
+        return;
+    }
+
+    UWorld* World = Pawn->GetWorld();
     if (!World)
     {
         UE_LOG(LogTemp, Error, TEXT("World is null!"));
         return;
     }
-
 
     UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(World);
     if (!NavSys)
@@ -32,37 +43,28 @@ void UAsyncPathfinding::Activate()
         return;
     }
 
-    AActor* NavAgent = Cast<AActor>(WorldContext);
-    if (!NavAgent)
-    {
-        UE_LOG(LogTemp, Error, TEXT("NavAgent is null!"));
-        return;
-    }
-
     FNavLocation NavStart, NavEnd;
+
     if (!NavSys->ProjectPointToNavigation(StartLocation, NavStart))
     {
-        UE_LOG(LogTemp, Warning, TEXT("StartLocation %s is not on NavMesh!"), *StartLocation.ToString());
+        UE_LOG(LogTemp, Warning, TEXT("Start not on NavMesh"));
         OnPathFound.Broadcast(TArray<FVector>());
         return;
     }
 
     if (!NavSys->ProjectPointToNavigation(EndLocation, NavEnd))
     {
-        UE_LOG(LogTemp, Warning, TEXT("EndLocation %s is not on NavMesh!"), *EndLocation.ToString());
+        UE_LOG(LogTemp, Warning, TEXT("End not on NavMesh"));
         OnPathFound.Broadcast(TArray<FVector>());
         return;
     }
 
     FPathFindingQuery Query(
-        NavAgent,  // Навигационный агент
-        *NavSys->GetDefaultNavDataInstance(), // Используем дефолтные данные навигации
+        Pawn,
+        *NavSys->GetDefaultNavDataInstance(),
         NavStart.Location,
         NavEnd.Location
     );
-
-    UE_LOG(LogTemp, Log, TEXT("Starting async pathfinding from %s to %s"),
-        *NavStart.Location.ToString(), *NavEnd.Location.ToString());
 
     NavSys->FindPathAsync(
         Query.NavAgentProperties,
