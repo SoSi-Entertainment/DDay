@@ -1,10 +1,10 @@
-#include "NPCGoToTileAsyncAction.h"
+#include "NPCMovementAsyncAction.h"
 
 #include "Components/ActorComponent.h"
 
 
 
-UNPCGoToTileAsyncAction* UNPCGoToTileAsyncAction::GoToTile(
+UNPCMovementAsyncAction* UNPCMovementAsyncAction::GoToTile(
 	AAIController* Controller,
 	AActor* TargetTile,
 	float AcceptanceRadius,
@@ -12,8 +12,8 @@ UNPCGoToTileAsyncAction* UNPCGoToTileAsyncAction::GoToTile(
 	bool DynamicRepath
 )
 {
-	UNPCGoToTileAsyncAction* Node =
-		NewObject<UNPCGoToTileAsyncAction>();
+	UNPCMovementAsyncAction* Node =
+		NewObject<UNPCMovementAsyncAction>();
 
 
 	Node->NPCController = Controller;
@@ -33,7 +33,7 @@ UNPCGoToTileAsyncAction* UNPCGoToTileAsyncAction::GoToTile(
 
 
 
-void UNPCGoToTileAsyncAction::Activate()
+void UNPCMovementAsyncAction::Activate()
 {
 	ExecuteGoToTile();
 }
@@ -41,7 +41,7 @@ void UNPCGoToTileAsyncAction::Activate()
 
 
 
-void UNPCGoToTileAsyncAction::ExecuteGoToTile()
+void UNPCMovementAsyncAction::ExecuteGoToTile()
 {
 	if (!NPCController)
 	{
@@ -196,7 +196,7 @@ void UNPCGoToTileAsyncAction::ExecuteGoToTile()
 			Delegate.BindUFunction(
 				this,
 				GET_FUNCTION_NAME_CHECKED(
-					UNPCGoToTileAsyncAction,
+					UNPCMovementAsyncAction,
 					HandleTargetReached
 				)
 			);
@@ -221,7 +221,7 @@ void UNPCGoToTileAsyncAction::ExecuteGoToTile()
 			Delegate.BindUFunction(
 				this,
 				GET_FUNCTION_NAME_CHECKED(
-					UNPCGoToTileAsyncAction,
+					UNPCMovementAsyncAction,
 					HandleAcceptanceRadiusReached
 				)
 			);
@@ -246,7 +246,7 @@ void UNPCGoToTileAsyncAction::ExecuteGoToTile()
 			Delegate.BindUFunction(
 				this,
 				GET_FUNCTION_NAME_CHECKED(
-					UNPCGoToTileAsyncAction,
+					UNPCMovementAsyncAction,
 					HandleWalkLengthRadiusReached
 				)
 			);
@@ -274,7 +274,7 @@ void UNPCGoToTileAsyncAction::ExecuteGoToTile()
 
 
 
-void UNPCGoToTileAsyncAction::HandleTargetReached()
+void UNPCMovementAsyncAction::HandleTargetReached()
 {
 	TargetReached.Broadcast();
 
@@ -284,7 +284,7 @@ void UNPCGoToTileAsyncAction::HandleTargetReached()
 
 
 
-void UNPCGoToTileAsyncAction::HandleAcceptanceRadiusReached()
+void UNPCMovementAsyncAction::HandleAcceptanceRadiusReached()
 {
 	AcceptanceRadiusReached.Broadcast();
 }
@@ -292,7 +292,7 @@ void UNPCGoToTileAsyncAction::HandleAcceptanceRadiusReached()
 
 
 
-void UNPCGoToTileAsyncAction::HandleWalkLengthRadiusReached()
+void UNPCMovementAsyncAction::HandleWalkLengthRadiusReached()
 {
 	WalkLengthRadiusReached.Broadcast();
 }

@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
-#include "NPCGoToTileAsyncAction.generated.h"
+#include "NPCMovementAsyncAction.generated.h"
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FNPCGoToTileSimpleDelegate);
@@ -11,7 +11,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FNPCGoToTileSimpleDelegate);
 
 
 UCLASS()
-class ETERNALTROOPS_API UNPCGoToTileAsyncAction : public UBlueprintAsyncActionBase
+class ETERNALTROOPS_API UNPCMovementAsyncAction : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
 
@@ -32,7 +32,7 @@ public:
 
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", DefaultToSelf = "Controller"))
-	static UNPCGoToTileAsyncAction* GoToTile(
+	static UNPCMovementAsyncAction* GoToTile(
 		AAIController* Controller,
 		AActor* TargetTile,
 		float AcceptanceRadius,
