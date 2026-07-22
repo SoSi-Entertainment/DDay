@@ -645,3 +645,195 @@ void UNPCStartStaticPathAsyncAction::HandleOnLooped()
 {
 	OnLooped.Broadcast();
 }
+
+
+
+
+UNPCStartAIPathAsyncAction* UNPCStartAIPathAsyncAction::StartAIPath(
+	AAIController* Controller,
+	const TArray<AActor*>& Points,
+	bool Looped,
+	int32 Iterator,
+	AActor* End,
+	bool DynamicRepath
+)
+{
+	UNPCStartAIPathAsyncAction* Node = NewObject<UNPCStartAIPathAsyncAction>();
+
+	Node->NPCController = Controller;
+	Node->PathPoints = Points;
+	Node->bLooped = Looped;
+	Node->StartIterator = Iterator;
+	Node->EndActor = End;
+	Node->bDynamicRepath = DynamicRepath;
+
+	return Node;
+}
+
+
+
+
+void UNPCStartAIPathAsyncAction::Activate()
+{
+	ExecuteStartAIPath();
+}
+
+
+
+
+void UNPCStartAIPathAsyncAction::ExecuteStartAIPath()
+{
+	if (!NPCController)
+	{
+		return;
+	}
+
+	UClass* MovementClass = LoadObject<UClass>(
+		nullptr,
+		TEXT("/Game/Blueprints/Navigation/NPC_Movement/NPC_Movement.NPC_Movement_C")
+	);
+
+	if (!MovementClass)
+	{
+		return;
+	}
+
+	MovementComponent = NPCController->GetComponentByClass(MovementClass);
+	if (!MovementComponent)
+	{
+		return;
+	}
+
+	UFunction* Function = MovementComponent->FindFunction(TEXT("Start Ai Path"));
+	if (!Function)
+	{
+		return;
+	}
+
+	uint8* Params = (uint8*)FMemory_Alloca(Function->ParmsSize);
+	Function->InitializeStruct(Params);
+
+	for (TFieldIterator<FProperty> It(Function); It; ++It)
+	{
+		FProperty* Property = *It;
+		const FString Name = Property->GetName();
+		uint8* Value = Params + Property->GetOffset_ForInternal();
+
+		if (Name == TEXT("Points"))
+		{
+			if (FArrayProperty* ArrayProperty = CastField<FArrayProperty>(Property))
+			{
+				if (FObjectProperty* InnerObjectProperty = CastField<FObjectProperty>(ArrayProperty->Inner))
+				{
+					FScriptArrayHelper ArrayHelper(ArrayProperty, Value);
+					ArrayHelper.EmptyValues();
+					for (AActor* Point : PathPoints)
+					{
+						const int32 Index = ArrayHelper.AddValue();
+						InnerObjectProperty->SetObjectPropertyValue(ArrayHelper.GetRawPtr(Index), Point);
+					}
+				}
+			}
+		}
+		else if (Name == TEXT("Looped"))
+		{
+			if (FBoolProperty* BoolProperty = CastField<FBoolProperty>(Property))
+			{
+				BoolProperty->SetPropertyValue(Value, bLooped);
+			}
+		}
+		else if (Name == TEXT("Iterator"))
+		{
+			if (FIntProperty* IntProperty = CastField<FIntProperty>(Property))
+			{
+				IntProperty->SetPropertyValue(Value, StartIterator);
+			}
+		}
+		else if (Name == TEXT("End"))
+		{
+			if (FObjectProperty* ObjectProperty = CastField<FObjectProperty>(Property))
+			{
+				ObjectProperty->SetObjectPropertyValue(Value, EndActor);
+			}
+		}
+		else if (Name == TEXT("Dynamic repath"))
+		{
+			if (FBoolProperty* BoolProperty = CastField<FBoolProperty>(Property))
+			{
+				BoolProperty->SetPropertyValue(Value, bDynamicRepath);
+			}
+		}
+		else if (Name == TEXT("Path finished"))
+		{
+			FScriptDelegate Delegate;
+			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCStartAIPathAsyncAction, HandleFinished));
+			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
+			{
+				DelegateProperty->SetPropertyValue(Value, Delegate);
+			}
+		}
+		else if (Name == TEXT("Point reached"))
+		{
+			FScriptDelegate Delegate;
+			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCStartAIPathAsyncAction, HandlePointReached));
+			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
+			{
+				DelegateProperty->SetPropertyValue(Value, Delegate);
+			}
+		}
+		else if (Name == TEXT("Looped event"))
+		{
+			FScriptDelegate Delegate;
+			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCStartAIPathAsyncAction, HandleOnLooped));
+			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
+			{
+				DelegateProperty->SetPropertyValue(Value, Delegate);
+			}
+		}
+		else if (Name == TEXT("Route switched"))
+		{
+			FScriptDelegate Delegate;
+			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCStartAIPathAsyncAction, HandleRouteSwitched));
+			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
+			{
+				DelegateProperty->SetPropertyValue(Value, Delegate);
+			}
+		}
+	}
+
+	MovementComponent->ProcessEvent(Function, Params);
+	Function->DestroyStruct(Params);
+}
+
+
+
+
+void UNPCStartAIPathAsyncAction::HandleFinished()
+{
+	Finished.Broadcast();
+	SetReadyToDestroy();
+}
+
+
+
+
+void UNPCStartAIPathAsyncAction::HandlePointReached()
+{
+	PointReached.Broadcast();
+}
+
+
+
+
+void UNPCStartAIPathAsyncAction::HandleOnLooped()
+{
+	OnLooped.Broadcast();
+}
+
+
+
+
+void UNPCStartAIPathAsyncAction::HandleRouteSwitched()
+{
+	RouteSwitched.Broadcast();
+}

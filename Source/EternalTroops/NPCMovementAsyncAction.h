@@ -191,3 +191,65 @@ private:
 	UFUNCTION()
 	void HandleOnLooped();
 };
+
+
+/** Async Blueprint node that starts the NPC_Movement "Start Ai Path" task. */
+UCLASS()
+class ETERNALTROOPS_API UNPCStartAIPathAsyncAction : public UBlueprintAsyncActionBase
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(BlueprintAssignable)
+	FNPCGoToTileSimpleDelegate Finished;
+
+	UPROPERTY(BlueprintAssignable)
+	FNPCGoToTileSimpleDelegate PointReached;
+
+	UPROPERTY(BlueprintAssignable)
+	FNPCGoToTileSimpleDelegate OnLooped;
+
+	UPROPERTY(BlueprintAssignable)
+	FNPCGoToTileSimpleDelegate RouteSwitched;
+
+	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", DefaultToSelf = "Controller"))
+	static UNPCStartAIPathAsyncAction* StartAIPath(
+		AAIController* Controller,
+		const TArray<AActor*>& Points,
+		bool Looped,
+		int32 Iterator,
+		AActor* End,
+		bool DynamicRepath
+	);
+
+	virtual void Activate() override;
+
+private:
+	UPROPERTY()
+	AAIController* NPCController;
+
+	UPROPERTY()
+	TArray<AActor*> PathPoints;
+
+	UPROPERTY()
+	AActor* EndActor;
+
+	bool bLooped = false;
+	int32 StartIterator = 0;
+	bool bDynamicRepath = false;
+	UObject* MovementComponent = nullptr;
+
+	void ExecuteStartAIPath();
+
+	UFUNCTION()
+	void HandleFinished();
+
+	UFUNCTION()
+	void HandlePointReached();
+
+	UFUNCTION()
+	void HandleOnLooped();
+
+	UFUNCTION()
+	void HandleRouteSwitched();
+};
