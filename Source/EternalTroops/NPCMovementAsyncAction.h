@@ -141,3 +141,53 @@ private:
 	UFUNCTION()
 	void HandleRefollowed();
 };
+
+
+/** Async Blueprint node that starts the NPC_Movement "Start Static Path" task. */
+UCLASS()
+class ETERNALTROOPS_API UNPCStartStaticPathAsyncAction : public UBlueprintAsyncActionBase
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(BlueprintAssignable)
+	FNPCGoToTileSimpleDelegate Finished;
+
+	UPROPERTY(BlueprintAssignable)
+	FNPCGoToTileSimpleDelegate PointReached;
+
+	UPROPERTY(BlueprintAssignable)
+	FNPCGoToTileSimpleDelegate OnLooped;
+
+	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", DefaultToSelf = "Controller"))
+	static UNPCStartStaticPathAsyncAction* StartStaticPath(
+		AAIController* Controller,
+		const TArray<AActor*>& Points,
+		bool Looped,
+		int32 Iterator
+	);
+
+	virtual void Activate() override;
+
+private:
+	UPROPERTY()
+	AAIController* NPCController;
+
+	UPROPERTY()
+	TArray<AActor*> PathPoints;
+
+	bool bLooped = false;
+	int32 StartIterator = 0;
+	UObject* MovementComponent = nullptr;
+
+	void ExecuteStartStaticPath();
+
+	UFUNCTION()
+	void HandleFinished();
+
+	UFUNCTION()
+	void HandlePointReached();
+
+	UFUNCTION()
+	void HandleOnLooped();
+};

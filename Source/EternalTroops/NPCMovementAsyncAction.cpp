@@ -1,6 +1,7 @@
 #include "NPCMovementAsyncAction.h"
 
 #include "Components/ActorComponent.h"
+#include "UObject/UnrealType.h"
 
 
 
@@ -482,4 +483,165 @@ void UNPCFollowCharacterAsyncAction::HandleWalkLengthRadiusReached()
 void UNPCFollowCharacterAsyncAction::HandleRefollowed()
 {
 	Refollowed.Broadcast();
+}
+
+
+
+
+UNPCStartStaticPathAsyncAction* UNPCStartStaticPathAsyncAction::StartStaticPath(
+	AAIController* Controller,
+	const TArray<AActor*>& Points,
+	bool Looped,
+	int32 Iterator
+)
+{
+	UNPCStartStaticPathAsyncAction* Node = NewObject<UNPCStartStaticPathAsyncAction>();
+
+	Node->NPCController = Controller;
+	Node->PathPoints.Reserve(Points.Num());
+	for (AActor* Point : Points)
+	{
+		Node->PathPoints.Add(Point);
+	}
+	Node->bLooped = Looped;
+	Node->StartIterator = Iterator;
+
+	return Node;
+}
+
+
+
+
+void UNPCStartStaticPathAsyncAction::Activate()
+{
+	ExecuteStartStaticPath();
+}
+
+
+
+
+void UNPCStartStaticPathAsyncAction::ExecuteStartStaticPath()
+{
+	if (!NPCController)
+	{
+		return;
+	}
+
+	UClass* MovementClass = LoadObject<UClass>(
+		nullptr,
+		TEXT("/Game/Blueprints/Navigation/NPC_Movement/NPC_Movement.NPC_Movement_C")
+	);
+
+	if (!MovementClass)
+	{
+		return;
+	}
+
+	MovementComponent = NPCController->GetComponentByClass(MovementClass);
+	if (!MovementComponent)
+	{
+		return;
+	}
+
+	UFunction* Function = MovementComponent->FindFunction(TEXT("Start Static Path"));
+	if (!Function)
+	{
+		return;
+	}
+
+	uint8* Params = (uint8*)FMemory_Alloca(Function->ParmsSize);
+	Function->InitializeStruct(Params);
+
+	for (TFieldIterator<FProperty> It(Function); It; ++It)
+	{
+		FProperty* Property = *It;
+		const FString Name = Property->GetName();
+		uint8* Value = Params + Property->GetOffset_ForInternal();
+
+		if (Name == TEXT("Points"))
+		{
+			if (FArrayProperty* ArrayProperty = CastField<FArrayProperty>(Property))
+			{
+				if (FObjectProperty* InnerObjectProperty = CastField<FObjectProperty>(ArrayProperty->Inner))
+				{
+					FScriptArrayHelper ArrayHelper(ArrayProperty, Value);
+					ArrayHelper.EmptyValues();
+					for (AActor* Point : PathPoints)
+					{
+						const int32 Index = ArrayHelper.AddValue();
+						InnerObjectProperty->SetObjectPropertyValue(ArrayHelper.GetRawPtr(Index), Point);
+					}
+				}
+			}
+		}
+		else if (Name == TEXT("Looped"))
+		{
+			if (FBoolProperty* BoolProperty = CastField<FBoolProperty>(Property))
+			{
+				BoolProperty->SetPropertyValue(Value, bLooped);
+			}
+		}
+		else if (Name == TEXT("Iterator"))
+		{
+			if (FIntProperty* IntProperty = CastField<FIntProperty>(Property))
+			{
+				IntProperty->SetPropertyValue(Value, StartIterator);
+			}
+		}
+		else if (Name == TEXT("Path finished"))
+		{
+			FScriptDelegate Delegate;
+			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCStartStaticPathAsyncAction, HandleFinished));
+			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
+			{
+				DelegateProperty->SetPropertyValue(Value, Delegate);
+			}
+		}
+		else if (Name == TEXT("Point reached"))
+		{
+			FScriptDelegate Delegate;
+			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCStartStaticPathAsyncAction, HandlePointReached));
+			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
+			{
+				DelegateProperty->SetPropertyValue(Value, Delegate);
+			}
+		}
+		else if (Name == TEXT("Looped event"))
+		{
+			FScriptDelegate Delegate;
+			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCStartStaticPathAsyncAction, HandleOnLooped));
+			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
+			{
+				DelegateProperty->SetPropertyValue(Value, Delegate);
+			}
+		}
+	}
+
+	MovementComponent->ProcessEvent(Function, Params);
+	Function->DestroyStruct(Params);
+}
+
+
+
+
+void UNPCStartStaticPathAsyncAction::HandleFinished()
+{
+	Finished.Broadcast();
+	SetReadyToDestroy();
+}
+
+
+
+
+void UNPCStartStaticPathAsyncAction::HandlePointReached()
+{
+	PointReached.Broadcast();
+}
+
+
+
+
+void UNPCStartStaticPathAsyncAction::HandleOnLooped()
+{
+	OnLooped.Broadcast();
 }
