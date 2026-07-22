@@ -296,3 +296,190 @@ void UNPCMovementAsyncAction::HandleWalkLengthRadiusReached()
 {
 	WalkLengthRadiusReached.Broadcast();
 }
+
+
+
+
+UNPCFollowCharacterAsyncAction* UNPCFollowCharacterAsyncAction::FollowCharacter(
+	AAIController* Controller,
+	ACharacter* TargetCharacter,
+	float AcceptanceRadius,
+	float WalkLengthRadius,
+	bool DynamicRepath,
+	bool FollowAfterReach,
+	float RefollowTimer
+)
+{
+	UNPCFollowCharacterAsyncAction* Node = NewObject<UNPCFollowCharacterAsyncAction>();
+
+	Node->NPCController = Controller;
+	Node->Character = TargetCharacter;
+	Node->Acceptance = AcceptanceRadius;
+	Node->WalkLength = WalkLengthRadius;
+	Node->bDynamicRepath = DynamicRepath;
+	Node->bFollowAfterReach = FollowAfterReach;
+	Node->RefollowInterval = RefollowTimer;
+
+	return Node;
+}
+
+
+
+
+void UNPCFollowCharacterAsyncAction::Activate()
+{
+	ExecuteFollowCharacter();
+}
+
+
+
+
+void UNPCFollowCharacterAsyncAction::ExecuteFollowCharacter()
+{
+	if (!NPCController || !Character)
+	{
+		return;
+	}
+
+	UClass* MovementClass = LoadObject<UClass>(
+		nullptr,
+		TEXT("/Game/Blueprints/Navigation/NPC_Movement/NPC_Movement.NPC_Movement_C")
+	);
+
+	if (!MovementClass)
+	{
+		return;
+	}
+
+	MovementComponent = NPCController->GetComponentByClass(MovementClass);
+
+	if (!MovementComponent)
+	{
+		return;
+	}
+
+	UFunction* Function = MovementComponent->FindFunction(TEXT("Follow Character"));
+
+	if (!Function)
+	{
+		return;
+	}
+
+	uint8* Params = (uint8*)FMemory_Alloca(Function->ParmsSize);
+	FMemory::Memzero(Params, Function->ParmsSize);
+
+	for (TFieldIterator<FProperty> It(Function); It; ++It)
+	{
+		FProperty* Property = *It;
+		const FString Name = Property->GetName();
+		uint8* Value = Params + Property->GetOffset_ForInternal();
+
+		if (Name == TEXT("Target Character"))
+		{
+			if (FObjectProperty* ObjectProperty = CastField<FObjectProperty>(Property))
+			{
+				ObjectProperty->SetObjectPropertyValue(Value, Character);
+			}
+		}
+		else if (Name == TEXT("Acceptance Radius"))
+		{
+			if (FDoubleProperty* DoubleProperty = CastField<FDoubleProperty>(Property))
+			{
+				DoubleProperty->SetPropertyValue(Value, Acceptance);
+			}
+			else if (FFloatProperty* FloatProperty = CastField<FFloatProperty>(Property))
+			{
+				FloatProperty->SetPropertyValue(Value, Acceptance);
+			}
+		}
+		else if (Name == TEXT("Walk lengh Radius"))
+		{
+			if (FDoubleProperty* DoubleProperty = CastField<FDoubleProperty>(Property))
+			{
+				DoubleProperty->SetPropertyValue(Value, WalkLength);
+			}
+			else if (FFloatProperty* FloatProperty = CastField<FFloatProperty>(Property))
+			{
+				FloatProperty->SetPropertyValue(Value, WalkLength);
+			}
+		}
+		else if (Name == TEXT("Dynamic repath"))
+		{
+			if (FBoolProperty* BoolProperty = CastField<FBoolProperty>(Property))
+			{
+				BoolProperty->SetPropertyValue(Value, bDynamicRepath);
+			}
+		}
+		else if (Name == TEXT("Follow after reach"))
+		{
+			if (FBoolProperty* BoolProperty = CastField<FBoolProperty>(Property))
+			{
+				BoolProperty->SetPropertyValue(Value, bFollowAfterReach);
+			}
+		}
+		else if (Name == TEXT("Refollow timer"))
+		{
+			if (FDoubleProperty* DoubleProperty = CastField<FDoubleProperty>(Property))
+			{
+				DoubleProperty->SetPropertyValue(Value, RefollowInterval);
+			}
+			else if (FFloatProperty* FloatProperty = CastField<FFloatProperty>(Property))
+			{
+				FloatProperty->SetPropertyValue(Value, RefollowInterval);
+			}
+		}
+		else if (Name == TEXT("Acceptance Radius Reached"))
+		{
+			FScriptDelegate Delegate;
+			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCFollowCharacterAsyncAction, HandleAcceptanceRadiusReached));
+			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
+			{
+				DelegateProperty->SetPropertyValue(Value, Delegate);
+			}
+		}
+		else if (Name == TEXT("Walk length Radius Reached"))
+		{
+			FScriptDelegate Delegate;
+			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCFollowCharacterAsyncAction, HandleWalkLengthRadiusReached));
+			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
+			{
+				DelegateProperty->SetPropertyValue(Value, Delegate);
+			}
+		}
+		else if (Name == TEXT("Refollowed"))
+		{
+			FScriptDelegate Delegate;
+			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCFollowCharacterAsyncAction, HandleRefollowed));
+			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
+			{
+				DelegateProperty->SetPropertyValue(Value, Delegate);
+			}
+		}
+	}
+
+	MovementComponent->ProcessEvent(Function, Params);
+}
+
+
+
+
+void UNPCFollowCharacterAsyncAction::HandleAcceptanceRadiusReached()
+{
+	AcceptanceRadiusReached.Broadcast();
+}
+
+
+
+
+void UNPCFollowCharacterAsyncAction::HandleWalkLengthRadiusReached()
+{
+	WalkLengthRadiusReached.Broadcast();
+}
+
+
+
+
+void UNPCFollowCharacterAsyncAction::HandleRefollowed()
+{
+	Refollowed.Broadcast();
+}
