@@ -31,6 +31,10 @@ public:
 	FNPCGoToTileSimpleDelegate WalkLengthRadiusReached;
 
 
+	UPROPERTY(BlueprintAssignable)
+	FNPCGoToTileSimpleDelegate Canceled;
+
+
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", DefaultToSelf = "Controller"))
 	static UNPCMovementAsyncAction* GoToTile(
@@ -83,6 +87,10 @@ private:
 
 	UFUNCTION()
 	void HandleWalkLengthRadiusReached();
+
+
+	UFUNCTION()
+	void HandleCanceled();
 };
 
 
@@ -99,8 +107,12 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FNPCGoToTileSimpleDelegate WalkLengthRadiusReached;
 
+
 	UPROPERTY(BlueprintAssignable)
 	FNPCGoToTileSimpleDelegate Refollowed;
+
+	UPROPERTY(BlueprintAssignable)
+	FNPCGoToTileSimpleDelegate Canceled;
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", DefaultToSelf = "Controller"))
 	static UNPCFollowCharacterAsyncAction* FollowCharacter(
@@ -140,6 +152,9 @@ private:
 
 	UFUNCTION()
 	void HandleRefollowed();
+
+	UFUNCTION()
+	void HandleCanceled();
 };
 
 
@@ -158,6 +173,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FNPCGoToTileSimpleDelegate OnLooped;
+
+	UPROPERTY(BlueprintAssignable)
+	FNPCGoToTileSimpleDelegate Canceled;
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", DefaultToSelf = "Controller"))
 	static UNPCStartStaticPathAsyncAction* StartStaticPath(
@@ -190,6 +208,9 @@ private:
 
 	UFUNCTION()
 	void HandleOnLooped();
+
+	UFUNCTION()
+	void HandleCanceled();
 };
 
 
@@ -211,6 +232,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FNPCGoToTileSimpleDelegate RouteSwitched;
+
+	UPROPERTY(BlueprintAssignable)
+	FNPCGoToTileSimpleDelegate Canceled;
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", DefaultToSelf = "Controller"))
 	static UNPCStartAIPathAsyncAction* StartAIPath(
@@ -252,4 +276,7 @@ private:
 
 	UFUNCTION()
 	void HandleRouteSwitched();
+
+	UFUNCTION()
+	void HandleCanceled();
 };

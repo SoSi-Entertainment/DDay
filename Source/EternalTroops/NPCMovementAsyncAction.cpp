@@ -262,6 +262,15 @@ void UNPCMovementAsyncAction::ExecuteGoToTile()
 				);
 			}
 		}
+		else if (Name == TEXT("Canceled"))
+		{
+			FScriptDelegate Delegate;
+			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCMovementAsyncAction, HandleCanceled));
+			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
+			{
+				DelegateProperty->SetPropertyValue(Value, Delegate);
+			}
+		}
 	}
 
 
@@ -296,6 +305,14 @@ void UNPCMovementAsyncAction::HandleAcceptanceRadiusReached()
 void UNPCMovementAsyncAction::HandleWalkLengthRadiusReached()
 {
 	WalkLengthRadiusReached.Broadcast();
+}
+
+
+
+
+void UNPCMovementAsyncAction::HandleCanceled()
+{
+	Canceled.Broadcast();
 }
 
 
@@ -456,6 +473,15 @@ void UNPCFollowCharacterAsyncAction::ExecuteFollowCharacter()
 				DelegateProperty->SetPropertyValue(Value, Delegate);
 			}
 		}
+		else if (Name == TEXT("Canceled"))
+		{
+			FScriptDelegate Delegate;
+			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCFollowCharacterAsyncAction, HandleCanceled));
+			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
+			{
+				DelegateProperty->SetPropertyValue(Value, Delegate);
+			}
+		}
 	}
 
 	MovementComponent->ProcessEvent(Function, Params);
@@ -483,6 +509,14 @@ void UNPCFollowCharacterAsyncAction::HandleWalkLengthRadiusReached()
 void UNPCFollowCharacterAsyncAction::HandleRefollowed()
 {
 	Refollowed.Broadcast();
+}
+
+
+
+
+void UNPCFollowCharacterAsyncAction::HandleCanceled()
+{
+	Canceled.Broadcast();
 }
 
 
@@ -615,6 +649,15 @@ void UNPCStartStaticPathAsyncAction::ExecuteStartStaticPath()
 				DelegateProperty->SetPropertyValue(Value, Delegate);
 			}
 		}
+		else if (Name == TEXT("Canceled"))
+		{
+			FScriptDelegate Delegate;
+			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCStartStaticPathAsyncAction, HandleCanceled));
+			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
+			{
+				DelegateProperty->SetPropertyValue(Value, Delegate);
+			}
+		}
 	}
 
 	MovementComponent->ProcessEvent(Function, Params);
@@ -644,6 +687,14 @@ void UNPCStartStaticPathAsyncAction::HandlePointReached()
 void UNPCStartStaticPathAsyncAction::HandleOnLooped()
 {
 	OnLooped.Broadcast();
+}
+
+
+
+
+void UNPCStartStaticPathAsyncAction::HandleCanceled()
+{
+	Canceled.Broadcast();
 }
 
 
@@ -799,6 +850,15 @@ void UNPCStartAIPathAsyncAction::ExecuteStartAIPath()
 				DelegateProperty->SetPropertyValue(Value, Delegate);
 			}
 		}
+		else if (Name == TEXT("Canceled"))
+		{
+			FScriptDelegate Delegate;
+			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCStartAIPathAsyncAction, HandleCanceled));
+			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
+			{
+				DelegateProperty->SetPropertyValue(Value, Delegate);
+			}
+		}
 	}
 
 	MovementComponent->ProcessEvent(Function, Params);
@@ -836,4 +896,12 @@ void UNPCStartAIPathAsyncAction::HandleOnLooped()
 void UNPCStartAIPathAsyncAction::HandleRouteSwitched()
 {
 	RouteSwitched.Broadcast();
+}
+
+
+
+
+void UNPCStartAIPathAsyncAction::HandleCanceled()
+{
+	Canceled.Broadcast();
 }
