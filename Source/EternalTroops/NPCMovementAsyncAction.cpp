@@ -116,7 +116,16 @@ void UNPCMovementAsyncAction::ExecuteGoToTile()
 
 
 
-		if (Name == TEXT("Target Tile"))
+		if (Name == TEXT("Finished"))
+		{
+			FScriptDelegate Delegate;
+			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCMovementAsyncAction, HandleFinished));
+			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
+			{
+				DelegateProperty->SetPropertyValue(Value, Delegate);
+			}
+		}
+		else if (Name == TEXT("Target Tile"))
 		{
 			if (FObjectProperty* Obj =
 				CastField<FObjectProperty>(Property))
@@ -287,7 +296,14 @@ void UNPCMovementAsyncAction::ExecuteGoToTile()
 void UNPCMovementAsyncAction::HandleTargetReached()
 {
 	TargetReached.Broadcast();
+}
 
+
+
+
+void UNPCMovementAsyncAction::HandleFinished()
+{
+	Finished.Broadcast();
 	SetReadyToDestroy();
 }
 
@@ -392,7 +408,16 @@ void UNPCFollowCharacterAsyncAction::ExecuteFollowCharacter()
 		const FString Name = Property->GetName();
 		uint8* Value = Params + Property->GetOffset_ForInternal();
 
-		if (Name == TEXT("Target Character"))
+		if (Name == TEXT("Finished"))
+		{
+			FScriptDelegate Delegate;
+			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCFollowCharacterAsyncAction, HandleFinished));
+			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
+			{
+				DelegateProperty->SetPropertyValue(Value, Delegate);
+			}
+		}
+		else if (Name == TEXT("Target Character"))
 		{
 			if (FObjectProperty* ObjectProperty = CastField<FObjectProperty>(Property))
 			{
@@ -493,6 +518,15 @@ void UNPCFollowCharacterAsyncAction::ExecuteFollowCharacter()
 void UNPCFollowCharacterAsyncAction::HandleAcceptanceRadiusReached()
 {
 	AcceptanceRadiusReached.Broadcast();
+}
+
+
+
+
+void UNPCFollowCharacterAsyncAction::HandleFinished()
+{
+	Finished.Broadcast();
+	SetReadyToDestroy();
 }
 
 
@@ -625,6 +659,15 @@ void UNPCStartStaticPathAsyncAction::ExecuteStartStaticPath()
 		else if (Name == TEXT("Path finished"))
 		{
 			FScriptDelegate Delegate;
+			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCStartStaticPathAsyncAction, HandlePathFinished));
+			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
+			{
+				DelegateProperty->SetPropertyValue(Value, Delegate);
+			}
+		}
+		else if (Name == TEXT("Finished"))
+		{
+			FScriptDelegate Delegate;
 			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCStartStaticPathAsyncAction, HandleFinished));
 			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
 			{
@@ -671,6 +714,14 @@ void UNPCStartStaticPathAsyncAction::HandleFinished()
 {
 	Finished.Broadcast();
 	SetReadyToDestroy();
+}
+
+
+
+
+void UNPCStartStaticPathAsyncAction::HandlePathFinished()
+{
+	PathFinished.Broadcast();
 }
 
 
@@ -817,6 +868,15 @@ void UNPCStartAIPathAsyncAction::ExecuteStartAIPath()
 		else if (Name == TEXT("Path finished"))
 		{
 			FScriptDelegate Delegate;
+			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCStartAIPathAsyncAction, HandlePathFinished));
+			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
+			{
+				DelegateProperty->SetPropertyValue(Value, Delegate);
+			}
+		}
+		else if (Name == TEXT("Finished"))
+		{
+			FScriptDelegate Delegate;
 			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCStartAIPathAsyncAction, HandleFinished));
 			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
 			{
@@ -872,6 +932,14 @@ void UNPCStartAIPathAsyncAction::HandleFinished()
 {
 	Finished.Broadcast();
 	SetReadyToDestroy();
+}
+
+
+
+
+void UNPCStartAIPathAsyncAction::HandlePathFinished()
+{
+	PathFinished.Broadcast();
 }
 
 

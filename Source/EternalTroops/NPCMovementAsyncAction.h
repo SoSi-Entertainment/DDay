@@ -18,6 +18,9 @@ class ETERNALTROOPS_API UNPCMovementAsyncAction : public UBlueprintAsyncActionBa
 
 
 public:
+	UPROPERTY(BlueprintAssignable)
+	FNPCGoToTileSimpleDelegate Finished;
+
 
 	UPROPERTY(BlueprintAssignable)
 	FNPCGoToTileSimpleDelegate TargetReached;
@@ -80,6 +83,9 @@ private:
 	UFUNCTION()
 	void HandleTargetReached();
 
+	UFUNCTION()
+	void HandleFinished();
+
 
 	UFUNCTION()
 	void HandleAcceptanceRadiusReached();
@@ -101,6 +107,9 @@ class ETERNALTROOPS_API UNPCFollowCharacterAsyncAction : public UBlueprintAsyncA
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(BlueprintAssignable)
+	FNPCGoToTileSimpleDelegate Finished;
+
 	UPROPERTY(BlueprintAssignable)
 	FNPCGoToTileSimpleDelegate AcceptanceRadiusReached;
 
@@ -148,6 +157,9 @@ private:
 	void HandleAcceptanceRadiusReached();
 
 	UFUNCTION()
+	void HandleFinished();
+
+	UFUNCTION()
 	void HandleWalkLengthRadiusReached();
 
 	UFUNCTION()
@@ -167,6 +179,9 @@ class ETERNALTROOPS_API UNPCStartStaticPathAsyncAction : public UBlueprintAsyncA
 public:
 	UPROPERTY(BlueprintAssignable)
 	FNPCGoToTileSimpleDelegate Finished;
+
+	UPROPERTY(BlueprintAssignable)
+	FNPCGoToTileSimpleDelegate PathFinished;
 
 	UPROPERTY(BlueprintAssignable)
 	FNPCGoToTileSimpleDelegate PointReached;
@@ -204,6 +219,9 @@ private:
 	void HandleFinished();
 
 	UFUNCTION()
+	void HandlePathFinished();
+
+	UFUNCTION()
 	void HandlePointReached();
 
 	UFUNCTION()
@@ -223,6 +241,9 @@ class ETERNALTROOPS_API UNPCStartAIPathAsyncAction : public UBlueprintAsyncActio
 public:
 	UPROPERTY(BlueprintAssignable)
 	FNPCGoToTileSimpleDelegate Finished;
+
+	UPROPERTY(BlueprintAssignable)
+	FNPCGoToTileSimpleDelegate PathFinished;
 
 	UPROPERTY(BlueprintAssignable)
 	FNPCGoToTileSimpleDelegate PointReached;
@@ -267,6 +288,9 @@ private:
 
 	UFUNCTION()
 	void HandleFinished();
+
+	UFUNCTION()
+	void HandlePathFinished();
 
 	UFUNCTION()
 	void HandlePointReached();
