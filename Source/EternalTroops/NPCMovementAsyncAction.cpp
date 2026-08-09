@@ -498,6 +498,15 @@ void UNPCFollowCharacterAsyncAction::ExecuteFollowCharacter()
 				DelegateProperty->SetPropertyValue(Value, Delegate);
 			}
 		}
+		else if (Name == TEXT("Target Character Dead"))
+		{
+			FScriptDelegate Delegate;
+			Delegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED(UNPCFollowCharacterAsyncAction, HandleTargetCharacterDead));
+			if (FDelegateProperty* DelegateProperty = CastField<FDelegateProperty>(Property))
+			{
+				DelegateProperty->SetPropertyValue(Value, Delegate);
+			}
+		}
 		else if (Name == TEXT("Canceled"))
 		{
 			FScriptDelegate Delegate;
@@ -543,6 +552,14 @@ void UNPCFollowCharacterAsyncAction::HandleWalkLengthRadiusReached()
 void UNPCFollowCharacterAsyncAction::HandleRefollowed()
 {
 	Refollowed.Broadcast();
+}
+
+
+
+
+void UNPCFollowCharacterAsyncAction::HandleTargetCharacterDead()
+{
+	TargetCharacterDead.Broadcast();
 }
 
 

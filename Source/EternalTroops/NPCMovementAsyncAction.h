@@ -121,6 +121,9 @@ public:
 	FNPCGoToTileSimpleDelegate Refollowed;
 
 	UPROPERTY(BlueprintAssignable)
+	FNPCGoToTileSimpleDelegate TargetCharacterDead;
+
+	UPROPERTY(BlueprintAssignable)
 	FNPCGoToTileSimpleDelegate Canceled;
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", DefaultToSelf = "Controller"))
@@ -164,6 +167,9 @@ private:
 
 	UFUNCTION()
 	void HandleRefollowed();
+
+	UFUNCTION()
+	void HandleTargetCharacterDead();
 
 	UFUNCTION()
 	void HandleCanceled();
