@@ -4,6 +4,8 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "CppFunctionLibrary.generated.h"
 
+class ACharacter;
+
 UCLASS()
 class ETERNALTROOPS_API UCppFunctionLibrary : public UBlueprintFunctionLibrary
 {
@@ -22,4 +24,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Camera")
 	static void SetCameraMovableWhenPaused(UObject* WorldContextObject, bool bMovable);
+
+	UFUNCTION(BlueprintCallable, Category = "Movement|Avoidance")
+	static void SetAvoidanceConsiderationRadius(ACharacter* Character, float Radius);
 };

@@ -1,6 +1,8 @@
-#include "CppFunctionLibrary.h"
+п»ї#include "CppFunctionLibrary.h"
 #include "Math/UnrealMathUtility.h"
 #include "ComponentInstanceDataCache.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 int32 UCppFunctionLibrary::HashFromString(const FString& Input)
 {
@@ -39,7 +41,7 @@ void UCppFunctionLibrary::SpawnWeightedCount(const TArray<float>& Probabilities,
 
     int32 SumCounts = 0;
 
-    // Вычисляем целую часть и остатки
+    // Р’С‹С‡РёСЃР»СЏРµРј С†РµР»СѓСЋ С‡Р°СЃС‚СЊ Рё РѕСЃС‚Р°С‚РєРё
     for (int32 i = 0; i < Probabilities.Num(); ++i)
     {
         float ExactCount = (Probabilities[i] / TotalWeight) * NumToSpawn;
@@ -51,7 +53,7 @@ void UCppFunctionLibrary::SpawnWeightedCount(const TArray<float>& Probabilities,
 
     int32 Remaining = NumToSpawn - SumCounts;
 
-    // Распределяем оставшиеся по наибольшему остатку
+    // Р Р°СЃРїСЂРµРґРµР»СЏРµРј РѕСЃС‚Р°РІС€РёРµСЃСЏ РїРѕ РЅР°РёР±РѕР»СЊС€РµРјСѓ РѕСЃС‚Р°С‚РєСѓ
     while (Remaining > 0)
     {
         int32 MaxIndex = 0;
@@ -67,7 +69,7 @@ void UCppFunctionLibrary::SpawnWeightedCount(const TArray<float>& Probabilities,
         }
 
         OutCounts[MaxIndex]++;
-        Remainders[MaxIndex] = 0.0f;  // чтобы не выбирать этот индекс повторно
+        Remainders[MaxIndex] = 0.0f;  // С‡С‚РѕР±С‹ РЅРµ РІС‹Р±РёСЂР°С‚СЊ СЌС‚РѕС‚ РёРЅРґРµРєСЃ РїРѕРІС‚РѕСЂРЅРѕ
         Remaining--;
     }
 }
@@ -87,5 +89,20 @@ void UCppFunctionLibrary::SetCameraMovableWhenPaused(UObject* WorldContextObject
     if (UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
     {
         World->bIsCameraMoveableWhenPaused = bMovable;
+    }
+}
+
+
+void UCppFunctionLibrary::SetAvoidanceConsiderationRadius(ACharacter* Character, float Radius)
+{
+    if (Character == nullptr)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SetAvoidanceConsiderationRadius: Character is null"));
+        return;
+    }
+
+    if (UCharacterMovementComponent* MovementComponent = Character->GetCharacterMovement())
+    {
+        MovementComponent->AvoidanceConsiderationRadius = Radius;
     }
 }
