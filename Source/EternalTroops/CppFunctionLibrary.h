@@ -27,4 +27,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Movement|Avoidance")
 	static void SetAvoidanceConsiderationRadius(ACharacter* Character, float Radius);
+
+	UFUNCTION(BlueprintCallable, Category = "Movement|Avoidance")
+	static void RemoveFromAvoidanceManager(ACharacter* Character);
 };

@@ -3,6 +3,7 @@
 #include "ComponentInstanceDataCache.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "AI/Navigation/AvoidanceManager.h"
 
 int32 UCppFunctionLibrary::HashFromString(const FString& Input)
 {
@@ -105,4 +106,41 @@ void UCppFunctionLibrary::SetAvoidanceConsiderationRadius(ACharacter* Character,
     {
         MovementComponent->AvoidanceConsiderationRadius = Radius;
     }
+}
+
+void UCppFunctionLibrary::RemoveFromAvoidanceManager(ACharacter* Character)
+{
+    if (!Character)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("RemoveFromAvoidanceManager: Character is null"));
+        return;
+    }
+
+    UCharacterMovementComponent* Movement = Character->GetCharacterMovement();
+    if (!Movement)
+    {
+        return;
+    }
+
+    const int32 AvoidanceUID = Movement->GetRVOAvoidanceUID();
+
+    UWorld* World = Character->GetWorld();
+    if (!World)
+    {
+        return;
+    }
+
+    UAvoidanceManager* Avoidance = World->GetAvoidanceManager();
+
+    UE_LOG(LogTemp, Warning,
+        TEXT("RemoveFromAvoidanceManager: UID = %d, Manager = %s"),
+        AvoidanceUID,
+        *GetNameSafe(Avoidance));
+
+    if (Avoidance && AvoidanceUID != 0)
+    {
+        Avoidance->RemoveAvoidanceObject(AvoidanceUID);
+    }
+
+    Movement->SetAvoidanceEnabled(false);
 }
