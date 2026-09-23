@@ -132,11 +132,6 @@ void UCppFunctionLibrary::RemoveFromAvoidanceManager(ACharacter* Character)
 
     UAvoidanceManager* Avoidance = World->GetAvoidanceManager();
 
-    UE_LOG(LogTemp, Warning,
-        TEXT("RemoveFromAvoidanceManager: UID = %d, Manager = %s"),
-        AvoidanceUID,
-        *GetNameSafe(Avoidance));
-
     if (Avoidance && AvoidanceUID != 0)
     {
         Avoidance->RemoveAvoidanceObject(AvoidanceUID);
